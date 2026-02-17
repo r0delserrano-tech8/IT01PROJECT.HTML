@@ -4,60 +4,585 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Photo Studio</title>
+    <!-- Google Fonts for enhanced typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        /* ===== ENTRANCE SCREEN STYLES ===== */
+        .entrance-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+
+        .entrance-overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .entrance-content {
+            text-align: center;
+            animation: fadeInUp 1s ease forwards;
+        }
+
+        .entrance-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 4em;
+            color: #FFD700;
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.5), 2px 2px 4px rgba(0,0,0,0.8);
+            margin-bottom: 10px;
+            letter-spacing: 3px;
+        }
+
+        .entrance-subtitle {
+            font-family: 'Lato', sans-serif;
+            font-size: 1.5em;
+            color: #87CEEB;
+            margin-bottom: 50px;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+        }
+
+        .enter-btn {
+            font-family: 'Lato', sans-serif;
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #1a1a2e;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            border: none;
+            padding: 18px 60px;
+            border-radius: 50px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .enter-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .enter-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(255, 215, 0, 0.6);
+        }
+
+        .enter-btn:hover::before {
+            left: 100%;
+        }
+
+        /* Decorative circles for entrance */
+        .entrance-decoration {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.1;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .entrance-decoration:nth-child(1) {
+            width: 300px;
+            height: 300px;
+            background: #FFD700;
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .entrance-decoration:nth-child(2) {
+            width: 200px;
+            height: 200px;
+            background: #87CEEB;
+            bottom: 20%;
+            right: 15%;
+            animation-delay: 2s;
+        }
+
+        .entrance-decoration:nth-child(3) {
+            width: 150px;
+            height: 150px;
+            background: #FFD700;
+            top: 60%;
+            left: 20%;
+            animation-delay: 4s;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        /* ===== MAIN CONTENT STYLES ===== */
+        body {
+            font-family: 'Lato', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #FFFFFF;
+            margin: 0;
+            padding: 0;
+            line-height: 1.8;
+            min-height: 100vh;
+        }
+
+        /* Main content animation */
+        .main-content {
+            opacity: 0;
+            transition: opacity 0.8s ease;
+            padding: 40px 20px;
+        }
+
+        .main-content.visible {
+            opacity: 1;
+        }
+
+        h1, h2, h3 {
+            text-align: center;
+            color: #FFD700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            font-family: 'Playfair Display', serif;
+        }
+
+        h1 {
+            font-size: 3.5em;
+            margin-bottom: 30px;
+            letter-spacing: 2px;
+            position: relative;
+            padding-bottom: 20px;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #FFD700, transparent);
+        }
+
+        h2 {
+            font-size: 2.2em;
+            margin-bottom: 25px;
+        }
+
+        h3 {
+            font-size: 1.8em;
+            margin-bottom: 20px;
+        }
+
+        .profile-section {
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .profile-img {
+            border: 6px solid #FFD700;
+            border-radius: 50%;
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.5), 0 10px 30px rgba(0,0,0,0.7);
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        .profile-img:hover {
+            transform: scale(1.08) rotate(3deg);
+            box-shadow: 0 0 60px rgba(255, 215, 0, 0.7), 0 15px 40px rgba(0,0,0,0.8);
+        }
+
+        /* Decorative frame for profile */
+        .profile-section::before {
+            content: '';
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 320px;
+            height: 320px;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .about-section, .interests-section {
+            max-width: 900px;
+            margin: 0 auto 50px;
+            padding: 35px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .about-section:hover, .interests-section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+            border-color: rgba(255, 215, 0, 0.4);
+        }
+
+        .about-section p {
+            text-align: justify;
+            font-size: 1.1em;
+            line-height: 1.9;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        li {
+            background: linear-gradient(135deg, rgba(135, 206, 235, 0.2) 0%, rgba(135, 206, 235, 0.1) 100%);
+            margin: 10px 0;
+            padding: 18px 25px;
+            border-radius: 12px;
+            color: #FFFFFF;
+            font-size: 1.05em;
+            transition: all 0.3s ease;
+            border-left: 4px solid #87CEEB;
+            position: relative;
+            overflow: hidden;
+        }
+
+        li:hover {
+            background: linear-gradient(135deg, rgba(135, 206, 235, 0.4) 0%, rgba(135, 206, 235, 0.2) 100%);
+            transform: translateX(10px);
+            border-left-color: #FFD700;
+        }
+
+        .portfolio-section {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .photo-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+            transition: all 0.4s ease;
+            cursor: pointer;
+        }
+
+        .photo-item:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+        }
+
+        .photo-item img {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            display: block;
+            border: 4px solid #FFD700;
+            transition: all 0.4s ease;
+        }
+
+        .photo-item:hover img {
+            transform: scale(1.1);
+        }
+
+        .photo-item::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 50%;
+            background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .photo-item:hover::after {
+            opacity: 1;
+        }
+
+        .video-section {
+            text-align: center;
+            margin-bottom: 50px;
+            padding: 20px;
+        }
+
+        video {
+            border: 6px solid #FFD700;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            max-width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        video:hover {
+            box-shadow: 0 15px 50px rgba(255, 215, 0, 0.3);
+            transform: scale(1.02);
+        }
+
+        hr {
+            border: none;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #FFD700, transparent);
+            margin: 60px 0;
+        }
+
+        .contact-section {
+            text-align: center;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            max-width: 800px;
+            margin: 0 auto;
+            transition: all 0.3s ease;
+        }
+
+        .contact-section:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 215, 0, 0.4);
+        }
+
+        .contact-section h3 {
+            margin-bottom: 20px;
+        }
+
+        .contact-section p {
+            font-size: 1.1em;
+            margin-bottom: 25px;
+        }
+
+        a {
+            color: #87CEEB;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            position: relative;
+            display: inline-block;
+            padding: 5px 15px;
+        }
+
+        a::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #FFD700;
+            transition: width 0.3s ease;
+        }
+
+        a:hover {
+            color: #FFD700;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+
+        a:hover::before {
+            width: 100%;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .entrance-title {
+                font-size: 2.5em;
+            }
+
+            .entrance-subtitle {
+                font-size: 1em;
+            }
+
+            h1 {
+                font-size: 2.2em;
+            }
+
+            h2 {
+                font-size: 1.6em;
+            }
+
+            .photo-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+
+            .about-section, .interests-section {
+                padding: 25px;
+                margin: 0 auto 30px;
+            }
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1a1a2e;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #FFD700, #FFA500);
+            border-radius: 6px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #FFA500, #FFD700);
+        }
+    </style>
 </head>
 <body>
 
-    <h1>WELCOME TO MY PHOTO STUDIO</h1>
+    <!-- ENTRANCE SCREEN -->
+    <div class="entrance-overlay" id="entranceOverlay">
+        <div class="entrance-decoration"></div>
+        <div class="entrance-decoration"></div>
+        <div class="entrance-decoration"></div>
+        
+        <div class="entrance-content">
+            <h1 class="entrance-title">My Photo Studio</h1>
+            <p class="entrance-subtitle">Welcome to My World</p>
+            <button class="enter-btn" onclick="enterSite()">Enter</button>
+        </div>
+    </div>
 
-    <!-- Replace 'your-profile-photo.jpg' with the path to your own profile photo -->
-    <img src="rdl,pageprofile.jpg" alt="A profile picture of me" width="300">
+    <!-- MAIN CONTENT -->
+    <div class="main-content" id="mainContent">
+        <h1>WELCOME TO MY PHOTO STUDIO</h1>
 
-    <h2>About Me</h2>
-    <p>
-        Hello! I am RODEL SERRANO I'm here to show you my output on my photography journey. I started my photography using my mobile phone until I got my first camera CANON 1200D, also I became officer of SMHS marketing, became creative started year 2023 also videographer and school editor.
-    </p>
+        <div class="profile-section">
+            <!-- Replace 'rdl,pageprofile.jpg' with the path to your own profile photo -->
+            <img src="rdl,pageprofile.jpg" alt="A profile picture of me" class="profile-img" width="300">
+        </div>
 
-    <h3>My Interests</h3>
-    <ul>
-        <li>Artificial Intelligence and IT support</li>
-        <li>Photographer creative</li>
-        <li>Videographer Editor and journalism</li>
-    </ul>
+        <div class="about-section">
+            <h2> About Me </h2>
+            <p>
+                Hello! I am RODEL SERRANO I'm here to show you my output on my photography journey. I started my photography using my mobile phone until I got my first camera CANON 1200D, also I became officer of SMHS marketing, became creative started year 2023 also videographer and school editor.
+            </p>
+        </div>
 
-    <h3>MY CAPTURED PHOTO</h3>
-    <!-- Replace 'image1.jpg' to 'image10.jpg' with the paths to your own portfolio photos -->
-    <img src="image1.jpg" alt="My photography portfolio showcasing professional photo studio work and creative output" width="300">
-    <img src="image2.jpg" alt="My photography portfolio showcasing professional photo studio work and creative output" width="300">
-    <img src="image3.jpg" alt="My photography portfolio showcasing professional photo studio work and creative output" width="300">
-    <img src="image4.jpg" alt="My photography portfolio showcasing professional photo studio work and creative output" width="300">
-    <img src="image5.jpg" alt="My photography portfolio showcasing professional photo studio work and creative output" width="300">
-    <img src="image6.jpg" alt="My photography portfolio showcasing professional photo studio work and creative output" width="300">
-    <img src="image7.jpg" alt="My photography portfolio showcasing professional photo studio work and creative output" width="300">
-    <img src="image8.jpg" alt="My photography portfolio showcasing professional photo studio work and creative output" width="300">
-    <img src="image9.jpg" alt="My photography portfolio showcasing professional photo studio work and creative output" width="300">
-    <img src="image10.jpg" alt="My photography portfolio showcasing professional photo studio work and creative output" width="300">
-    <img src="image11.jpg" alt="My photography portfolio showcasing professional photo studio work and creative output" width="300">
-    <img src="image12.jpg" alt="My photography portfolio showcasing professional photo studio work and creative output" width="300">
-    <img src="image13.jpg" alt="My photography portfolio showcasing professional photo studio work and creative output" width="300">
-    <img src="image14.jpg" alt="My photography portfolio showcasing professional photo studio work and creative output" width="300">
-    <img src="image15.jpg" alt="My photography portfolio showcasing professional photo studio work and creative output" width="300">
-  
-  
-  
+        <div class="interests-section">
+            <h3>My Interests</h3>
+            <ul>
+                <li>Artificial Intelligence and IT support</li>
+                <li>Photographer creative</li>
+                <li>Videographer Editor and journalism</li>
+            </ul>
+        </div>
 
-    <h3>MY VIDEO</h3>
-    <!-- Replace 'your-video.mp4' with the path to your own video file. You can also use a YouTube embed or other video sources. -->
-    <video width="600" height="500" controls>
-        <source src="it01video.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-    </video>
+        <div class="portfolio-section">
+            <h3>MY CAPTURED PHOTO</h3>
+            <div class="photo-grid">
+                <!-- Replace 'image1.jpg' to 'image15.jpg' with the paths to your own portfolio photos -->
+                <div class="photo-item"><img src="image1.jpg" alt="My photography portfolio showcasing professional photo studio work and creative output"></div>
+                <div class="photo-item"><img src="image2.jpg" alt="My photography portfolio showcasing professional photo studio work and creative output"></div>
+                <div class="photo-item"><img src="image3.jpg" alt="My photography portfolio showcasing professional photo studio work and creative output"></div>
+                <div class="photo-item"><img src="image4.jpg" alt="My photography portfolio showcasing professional photo studio work and creative output"></div>
+                <div class="photo-item"><img src="image5.jpg" alt="My photography portfolio showcasing professional photo studio work and creative output"></div>
+                <div class="photo-item"><img src="image6.jpg" alt="My photography portfolio showcasing professional photo studio work and creative output"></div>
+                <div class="photo-item"><img src="image7.jpg" alt="My photography portfolio showcasing professional photo studio work and creative output"></div>
+                <div class="photo-item"><img src="image8.jpg" alt="My photography portfolio showcasing professional photo studio work and creative output"></div>
+                <div class="photo-item"><img src="image9.jpg" alt="My photography portfolio showcasing professional photo studio work and creative output"></div>
+                <div class="photo-item"><img src="image10.jpg" alt="My photography portfolio showcasing professional photo studio work and creative output"></div>
+                <div class="photo-item"><img src="image11.jpg" alt="My photography portfolio showcasing professional photo studio work and creative output"></div>
+                <div class="photo-item"><img src="image12.jpg" alt="My photography portfolio showcasing professional photo studio work and creative output"></div>
+                <div class="photo-item"><img src="image13.jpg" alt="My photography portfolio showcasing professional photo studio work and creative output"></div>
+                <div class="photo-item"><img src="image14.jpg" alt="My photography portfolio showcasing professional photo studio work and creative output"></div>
+                <div class="photo-item"><img src="image15.jpg" alt="My photography portfolio showcasing professional photo studio work and creative output"></div>
+            </div>
+        </div>
 
-    <hr>
+        <div class="video-section">
+            <h3>MY VIDEO</h3>
+            <!-- Replace 'it01video.mp4' with the path to your own video file. You can also use a YouTube embed or other video sources. -->
+            <video width="600" height="500" controls>
+                <source src="it01video.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
 
-    <h3>Get In Touch - Click the link and book me as your creative</h3>
-    <p>If you'd like to learn more or collaborate, feel free to reach out on my social media or email:</p>
-    <a href="https://www.facebook.com/profile.php?id=61551811655087" target="_blank">Visit My Facebook Page</a> | 
-    <a href="serranorodel601@gmail.com">Email Me</a>
+        <hr>
+
+        <div class="contact-section">
+            <h3>Click the link and book me as your creative</h3>
+            <p>If you'd like to learn more or collaborate, feel free to reach out on my social media or email:</p>
+            <a href="https://www.facebook.com/profile.php?id=61551811655087" target="_blank">Visit My Facebook Page</a> | 
+            <a href="mailto:serranorodel601@gmail.com">Email Me</a>
+        </div>
+    </div>
+
+    <script>
+        function enterSite() {
+            // Hide entrance overlay
+            const overlay = document.getElementById('entranceOverlay');
+            overlay.classList.add('hidden');
+            
+            // Show main content with animation
+            const mainContent = document.getElementById('mainContent');
+            setTimeout(() => {
+                mainContent.classList.add('visible');
+            }, 300);
+            
+            // Store that user has entered
+            sessionStorage.setItem('hasEntered', 'true');
+        }
+
+        // Check if user already entered (for page refresh)
+        window.addEventListener('load', function() {
+            if (sessionStorage.getItem('hasEntered') === 'true') {
+                const overlay = document.getElementById('entranceOverlay');
+                const mainContent = document.getElementById('mainContent');
+                overlay.classList.add('hidden');
+                mainContent.classList.add('visible');
+            }
+        });
+    </script>
 
 </body>
 </html>
